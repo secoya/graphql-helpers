@@ -32,6 +32,8 @@ type Middleware = {
   wrapInputTypeFields: (fieldThunk: Object) => Object,
   wrapType: (type: Object) => Object,
   wrapTypeFields: (fieldThunk: Object) => Object,
+  wrapMutations: (type: Object) => Object,
+  wrapSubscriptions: (type: Object) => Object,
 };
 
 const parseSpec = spec => {
@@ -53,6 +55,7 @@ export default class Registry {
 
   _wrapTypeFields: (thunk: Thunk) => GraphQLFieldConfigMap;
   _wrapMutations: (mutationsType: Object) => Object;
+  _wrapSubscriptions: (subscriptionsType: Object) => Object;
 
   types: {
     [key: string]: Object,
@@ -63,12 +66,14 @@ export default class Registry {
   };
 
   mutations: Array<Object>;
+  subscriptions: Array<Object>;
 
   constructor(middleware: ?Middleware = null) {
     middleware;
     this.types = {};
     this.interfaces = {};
     this.mutations = [];
+    this.subscriptions = [];
     this.addType(GraphQLID);
     this.addType(GraphQLInt);
     this.addType(GraphQLBoolean);
@@ -85,6 +90,12 @@ export default class Registry {
       this._wrapMutations = middleware.wrapMutations;
     } else {
       this._wrapMutations = identity;
+    }
+
+    if (middleware && middleware.wrapSubscriptions) {
+      this._wrapSubscriptions = middleware.wrapSubscriptions;
+    } else {
+      this._wrapSubscriptions = identity;
     }
   }
 
@@ -143,5 +154,20 @@ export default class Registry {
   getMutationType() {
     /* Returns a merged aggregate type of all registered mutations */
     return mergeTypes('Mutation', ...this.mutations);
+  }
+
+  addSubscriptions(subscriptions: Object): void {
+    this.subscriptions = [...this.subscriptions, subscriptions];
+  }
+
+  createSubscriptions(spec: string, resolvers: Object = {}) {
+    const built = this._wrapSubscriptions(builders.buildType(this, parseSpec(spec), resolvers));
+    this.addSubscriptions(built);
+    return built;
+  }
+
+  getSubscriptionType() {
+    /* Returns a merged aggregate type of all registered mutations */
+    return mergeTypes('Subscription', ...this.subscriptions);
   }
 }
