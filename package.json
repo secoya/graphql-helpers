@@ -1,6 +1,6 @@
 {
   "name": "@secoya/graphql-helpers",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Tools and utilities for making GraphQL servers easier to build",
   "main": "lib/index.js",
   "jsnext:main": "es/index.js",
@@ -83,6 +83,7 @@
     "graphql": "^0.6.0 || ^0.7.0 || ^0.8.0 || ^0.9.0"
   },
   "dependencies": {
+    "babel-runtime": "^6.26.0",
     "i": "^0.3.5",
     "varname": "^2.0.2"
   }
