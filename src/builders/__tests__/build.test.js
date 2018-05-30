@@ -2,17 +2,19 @@ import test from 'ava';
 
 import Registry from '../../Registry';
 
-
 test(`An empty type can be built`, async t => {
+  /**
+   * @see https://github.com/graphql/graphql-js/issues/937#issuecomment-349887736
+   * for futher info about empty types.
+   */
   const newType = new Registry().buildType(`
-    type Empty {}
+    type Empty
   `);
 
   const fields = newType._typeConfig.fields();
 
   t.is(Object.keys(fields).length, 0);
 });
-
 
 test(`A type can have optional fields`, async t => {
   const newType = new Registry().buildType(`
@@ -27,14 +29,17 @@ test(`A type can have optional fields`, async t => {
 });
 
 test(`A field can have a custom resolver`, async t => {
-  const newType = new Registry().buildType(`
+  const newType = new Registry().buildType(
+    `
     type Simple {
       id: ID
       title: String
     }
-  `, {
-    id: obj => obj.foo,
-  });
+  `,
+    {
+      id: obj => obj.foo,
+    },
+  );
 
   const fields = newType._typeConfig.fields();
 
@@ -90,7 +95,6 @@ test(`A type can have array fields`, async t => {
   t.is(Object.keys(fields).length, 1);
 });
 
-
 test(`An type with a several fields can be built`, async t => {
   const newType = new Registry().buildType(`
     type Product {
@@ -105,8 +109,6 @@ test(`An type with a several fields can be built`, async t => {
 
   t.is(Object.keys(fields).length, 4);
 });
-
-
 
 test(`An interface can be built`, async t => {
   const registry = new Registry();

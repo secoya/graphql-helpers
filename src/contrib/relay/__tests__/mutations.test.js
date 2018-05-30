@@ -5,27 +5,31 @@ import { GraphQLSchema } from 'graphql';
 import Registry from '../../../Registry';
 import middleware from '../middleware';
 
-test(`Relay Middleware`, async () => {
+test(`Relay Middleware`, async t => {
   const registry = new Registry(middleware);
 
   registry.createType(`
-    type BuyProductPayload {
-      transactionID: ID!
-      message: String!
-    }
-  `);
+      type BuyProductPayload {
+        transactionID: ID!
+        message: String!
+      }
+    `);
 
-  registry.createMutations(`
-    type MyMutations {
-      buyProduct(productId: ID!, userId: ID!): BuyProductPayload
-    }
-  `, {
-    buyProduct: () => null,
-  });
+  registry.createMutations(
+    `
+      type MyMutations {
+        buyProduct(productId: ID!, userId: ID!): BuyProductPayload
+      }
+    `,
+    {
+      buyProduct: () => null,
+    },
+  );
+
+  t.pass();
 });
 
-
-test(`Relay Schema`, async () => {
+test(`Relay Schema`, async t => {
   const registry = new Registry(middleware);
 
   registry.createType(`
@@ -46,18 +50,23 @@ test(`Relay Schema`, async () => {
     }
   `);
 
-  registry.createMutations(`
+  registry.createMutations(
+    `
     type AuthMutations {
       login(username: String!, password: String!): LoginPayload
     }
-  `, {
-    login: ({username, password}) => ({
-      token: `A super secure token ${username}/${password}`,
-    }),
-  });
+  `,
+    {
+      login: ({ username, password }) => ({
+        token: `A super secure token ${username}/${password}`,
+      }),
+    },
+  );
 
   new GraphQLSchema({
     query: registry.getType('Query'),
     mutation: registry.getMutationType(),
   });
+
+  t.pass();
 });

@@ -1,12 +1,10 @@
 import test from 'ava';
 
-import {
-  GraphQLSchema,
-} from 'graphql';
+import { GraphQLSchema } from 'graphql';
 
 import Registry from '../Registry';
 
-test(`A schema can be created`, async () => {
+test(`A schema can be created`, async t => {
   const registry = new Registry();
 
   registry.createType(`
@@ -36,4 +34,6 @@ test(`A schema can be created`, async () => {
   new GraphQLSchema({
     query: registry.getType('Query'),
   });
+
+  t.pass();
 });

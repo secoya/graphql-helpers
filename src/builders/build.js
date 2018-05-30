@@ -1,9 +1,6 @@
 /* @flow */
 
-import type {
-  GraphQLObjectType,
-  GraphQLInterfaceType,
-} from 'graphql';
+import type { GraphQLObjectType, GraphQLInterfaceType } from 'graphql';
 
 import { parse } from 'graphql';
 
@@ -17,8 +14,8 @@ import type { ResolverFn, ResolveTypeFn } from '../resolvers/types';
 export default function build(
   registry: Registry,
   spec: string,
-  resolvers: ?{[name: string]: ResolverFn} | ResolveTypeFn,
-): [GraphQLObjectType | GraphQLInterfaceType, string]  {
+  resolvers: ?{ [name: string]: ResolverFn } | ResolveTypeFn,
+): [GraphQLObjectType | GraphQLInterfaceType, string] {
   const documentAst = parse(spec);
 
   if (documentAst.definitions.length !== 1) {

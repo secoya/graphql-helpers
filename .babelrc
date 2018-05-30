@@ -4,7 +4,7 @@
     "transform-class-properties",
     "transform-runtime",
     "transform-flow-strip-types",
-    "syntax-flow",
+    "syntax-flow"
   ],
   "env": {
     "commonjs": {
